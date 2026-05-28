@@ -44,5 +44,9 @@ The injected metadata follows the standard `Google Spatial Media` format. Videos
 - Adobe Premiere Pro
 - DeoVR / Skybox VR Player
 
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome! 
+If this tool helped you process massive VR videos without OOM crashes, or saved you hours of re-encoding time, please consider giving it a ⭐ **Star**!
+
 ## 📄 License
 This project is licensed under the MIT License - feel free to use, modify, and distribute it!
