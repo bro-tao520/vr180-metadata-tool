@@ -334,8 +334,8 @@ class VRMetadataToolApp:
     def __init__(self, root):
         self.root = root
         self.root.title("VR180 Metadata Tool")
-        self.root.geometry("780x570")
-        self.root.minsize(700, 520)
+        self.root.geometry("780x600")
+        self.root.minsize(700, 550)
 
         self.file_list = []
         self.style = ttk.Style()
@@ -406,21 +406,19 @@ class VRMetadataToolApp:
 
         self.action_var = tk.StringVar(value="inject")
 
-        # Injection mode: Write Google Spatial UUID to /moov/trak/uuid
-        # Does not write st3d/sv3d or udta
+        # Injection mode: Auto-clean old metadata first, then inject new UUID
         r_inject = ttk.Radiobutton(
             action_frame,
-            text="Inject Metadata",
+            text="Inject Metadata (auto-clean old metadata first)",
             variable=self.action_var,
             value="inject"
         )
         r_inject.pack(anchor=tk.W, pady=2)
 
-        # Clear mode: Use FFmpeg to safely remove all metadata
-        # Performs re-muxing without re-encoding
+        # Clear mode: Remove all metadata
         r_clear = ttk.Radiobutton(
             action_frame,
-            text="Clear Metadata",
+            text="Clear Metadata (remove all metadata)",
             variable=self.action_var,
             value="clear"
         )
@@ -581,7 +579,7 @@ class VRMetadataToolApp:
                         print(f"FFmpeg clear failed: {input_file}")
                         print(result.stderr)
 
-                else:
+                else:  # inject mode
                     if ext_lower not in FASTSTART_EXTENSIONS:
                         fail_count += 1
                         print(f"Skipping non-MP4/MOV/M4V file: {input_file}")
@@ -589,6 +587,7 @@ class VRMetadataToolApp:
 
                     output_file = os.path.join(dir_name, f"{name}_VR180_injected{ext}")
 
+                    # Step 1: Clean old metadata using FFmpeg
                     cmd = self.build_ffmpeg_clean_command(
                         input_file=input_file,
                         output_file=output_file,
@@ -610,6 +609,7 @@ class VRMetadataToolApp:
                         print(result.stderr)
                     else:
                         try:
+                            # Step 2: Inject VR180 metadata
                             inject_google_vr180_metadata_to_udta(output_file)
                             success_count += 1
                         except Exception as e:
