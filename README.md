@@ -1,4 +1,4 @@
-# VR180 Metadata Tool
+# VR180 Metadata Injector
 
 A lightweight, extremely fast, and memory-efficient GUI tool to inject standard VR180 (Left-Right, Equirectangular) metadata into MP4 videos, or completely clear corrupted metadata. 
 
